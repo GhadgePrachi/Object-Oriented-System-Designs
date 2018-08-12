@@ -1,0 +1,40 @@
+NAMING CONVENTIONS:
+    Naming member variables :
+    camelCasing or category_subcategory
+
+    Naming Class:
+    CamelCasing
+
+    Constants :
+    CATEGORY_SUBCATEGORY
+
+    Using meaningful names (e.g input,element,elements,charSet[],hash[],table[],letters[],dictionary[],s,s1,s2,c,c1,c2,i,j,node,root)
+
+
+COMMENTS:
+    Method Comments :
+    /*What the methodA does*/
+    methodA(){}
+
+    Loop Comments :
+    /*What the loopA does*/
+    if(X!=Y){}
+
+    Single line update/variable initialization comments :
+    // The root of this trie.
+    private TrieNode root;
+
+ALIGNMENT :
+        ClassA{//opening curly bracket here
+            //BlankLine and go to next line and write here after adding tab
+            void methodA(){//opening curly bracket here
+                //Write here after adding tab
+                if(X!=Y){//opening curly bracket here
+                    //Write here after tab & follow further tabs for inner loops
+                }//closing curly bracket  for if here
+            }//closing curly bracket for method here
+        }//closing curly bracket for class here
+
+
+
+

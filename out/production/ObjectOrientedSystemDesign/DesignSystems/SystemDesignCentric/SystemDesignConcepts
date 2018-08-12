@@ -1,0 +1,68 @@
+Basic workflow :
+    i)Three major sub-tasks:
+        A)UI design -
+            Clearing i/p and o/p requirements
+            How user interacts with the system via User Interface(Web based or Mobile App based),
+            How user adds data to system and how result is presented back to the user by the system
+         [This is basically object oriented problem but in brief, discuss how you think the system should work wrt user]
+
+        B)Data design -
+            What and how data is stored in the system?
+            a)Entity types : eg User, Content
+            b)Data types : Structured(SQL) or Non-structured(NOSQl:Hadoop)
+
+        C)Processing design -
+            How data flows through the system? [from data storage to system & system to ui]
+            How and where data is validated by the system?
+            How data is transformed/processed as it moves into system and out of the system
+
+              - - - -          - - - - - - - - - - - - - - - -        - - - - - - - -
+             |      | Request | Load Balancer | Server01     |  ----> | Data Storage|
+             | UI   |  ---->  |               | Server02     |
+             |_ _ _ |  <----  |_ _ _ _ _ _ _ _|_ ... _ _ _ _ |  <---- |_ _ _ _ _ _ _|
+                       Reply
+          Client Device               Service System                  Database System
+
+    ii)How to make our system efficient?
+          Client:
+          Ease for user to access the system(UI)
+
+          Server:
+          Ease for the system(Web Services-not too complex and avoid unnecessary work/processing),
+          Server selections:
+            How many? dependent on Query per second(QPS)
+            More Servers(Horizontally scaled) vs More Memory for each server(Vertically scaled) tradeoffs
+            Memory per server? Large memory required in case of backend server else lag in response time with increasing requests.
+            HeavyCPU for servers? More calculations and fetching result(Dual Core)
+            Geo-located Servers? Response time is improved
+            Load balancer? Distributes equal request loads onto each server
+
+          Data:
+          Scalability and Flexibility for future demands(Web services)
+          Backup and Recovery and Availability of the data in case of failure
+          Partitioning and Replication
+          Caching and Read/Write Tradeoffs
+
+Online References:
+https://en.wikipedia.org/wiki/Systems_design
+http://blog.gainlo.co/index.php/2017/03/24/chapter-5-system-design-interviews-part-complete-guide-google-interview-preparation/
+https://www.youtube.com/watch?v=0163cssUxLA
+https://www.youtube.com/watch?v=DggPVpQmrsg
+https://www.youtube.com/watch?v=GcE-a7zO2N0
+
+Notes:
+1)Study what happens when we type url and enter? Domain Name Server mapping to ipaddress of nearest server
+2)What is web crawling? url click chaining
+3)What are web services?
+  Types?a)Soap : What is SOAP(Simple object Access Protocol) are std communication protocol/rules for XML based msg/data exchange.SOAP uses different transport protocol like HTTP,SMTP
+        b)REST : What is REST/RESTful? Representational State Transfer
+
+        a)Stateful : SMTP (Email services)
+        b)Stateless : Http
+4)Third party services :
+    a)Redis : Cache layer, In-memory db, refreshed with every update or in specific time interval
+      https://redis.io/documentation
+    b)Kafka : Event-Driven => Scalable Producer-Consumer(Subscriber) model for Kafka cluster with partition queues
+      https://kafka.apache.org/intro
+    c)Azure CDN/CloudFlare/CacheFly/Akamai:Content Delivery Network
+

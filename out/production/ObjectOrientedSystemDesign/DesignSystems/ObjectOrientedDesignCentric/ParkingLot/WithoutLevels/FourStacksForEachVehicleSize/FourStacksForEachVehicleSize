@@ -1,0 +1,12 @@
+(Efficient)
+Implementation:
+4 stacks for each vehicle size
+Each stack will store only available spots
+
+parkVehicle()
+this would check for vehicleSize and  look for the respective stack(just the top) for available spots, making it run in O(1)
+then remove the spot from stack
+
+removeVehicle()
+it will take O(n) time to search for the spot in the respective stack
+then add the spot to stack

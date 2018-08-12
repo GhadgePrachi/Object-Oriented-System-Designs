@@ -1,0 +1,38 @@
+Core Features:
+    Shopping Cart : Refer a part of the blog mentioned below
+    Sales Rank Generation :
+        Basic block diagram
+        Data Storage : SQL :
+            1)Join Category and Product tables  and frequent(hourly or daily? writes to db are all expensive
+            2)Use Denormalization for better read performances and have a single table with category and product etc, this will still be expensive
+            3)Use Log files for the above(purchases made) storage  for analysis purposes and use Map_Reduce to categorize(based on the seller) and get rank
+            4)This design is for without subcategory, for subcategories what changes we would want?
+        Note : Refer Cache System
+
+
+/*
+Amazon Buying and Selling workflow :
+
+Some Amazon information that needs to be understood:
+ASIN - Amazon Standard Identification Number. This is the basic key to each product on Amazon.
+Browse Node - Collections of items. ASINs can be in multiple browse nodes.
+
+Amazon, as has been widely noted, has stayed out of the REST vs. SOAP debate by making their site compatible with both methodologies. I've used the site in a RESTian way and apparently so have a lot of others. Amazon handles more REST-type requests than SOAP-type requests. This probably shouldn't be surprising since if all you want is a simple "give me a listing and let me reformat it" kind of request, grabbing the XML from a search and using the built-in XSLT engine to format it is dead-simple. Even so, the Amazon Lite demo site is done in a RESTian fashion, showing that REST doesn't have to equate to "simple."
+Greek Landscapes is another example of a RESTian use of Amazon. The site is all XSLT stylesheets and HTML. Click on a book link and note that the URL is Amazon, but the formatting is for Greek Landscapes.
+
+Jeff describes three types of architectures for using AWS:
+Static architecture that uses only HTML and XSLT stylesheets. This is relatively easy to do and doesn't require any kind of sophisticated hosting.
+Dynamic architecture that uses server side code and a SOAP or XML interface. DevManagers.com is an example of this kind of site that is built using PHP.
+Pseudo-static architecture where you dynamically grab data on a regular schedule and create static pages from it for use by customers. ePinions.com is probably doing this. This kind of architecture scales well for large loads. Of course, data like availability won't be up-to-date in this model.
+Jeff is talking about caching. Obviously, Amazon would prefer that users cache the data rather than hitting Amazon's servers every time. An interesting point: this is pretty easy to do in REST mode since the infrastructure of the Internet can already to this and there's lots of proxy code for HTTP already written and available for use.
+
+Here is a tool for exploring the merchandising API. It doesn't work very well in Safari or Mozilla (i.e. its IE specific). Even so, the tool looks like a useful way to explore what kind of results you can get back and even play with the XSL transformation.
+The Merchandising API allows a developer to get access to data about the products on Amazon in a variety of ways. There are two major modes: light and heavy. Light is more useful for simple indexes. Heavy is for creating fully functional product sites. I asked about URL longevity. No real answer except general agreement that stable URLs for things like images is "a good thing." The Merchandising API supports the "find" and "discover" legs of the Amazon "find, discover, buy" triangle.
+The Shopping API provides the "buy" leg of the triangle by allowing users to add things to their shopping cart. The easiest way to do this, of course, is with a simple link to Amazon. This can simply take people to a page on Amazon, give them a "buy box" or even push the item right into the shopping cart. The more interesting AWS component, however, is called "remote shopping carts." The NBA Store is an example of a site that uses a remote shopping cart. The remote shopping cart creates a hidden cart on Amazon and then transfers that into the users actual Amazon cart and they're transfered into the order pipeline. A new feature announced today is that the order pipeline can be branded. Try it on the NBA Store. You'll see the NBA co-branding with Amazon throughout the order pipeline.
+One of the things you've probably noticed when you use Amazon is that it now tells you that there are used items available when you search for something. Amazon does this by allowing other people to sell their stuff using Amazon's platform. The Seller API allows this to be managed through AWS. There are actually three different ways that this works: Marketplace is for Amazon products, zShops is for non-Amazon products, and Auction is for, well, auctions. The Seller API is batch oriented.
+
+Here are some other toolsets:
+amazon.pl is a PERL library for using AWS from CGI scripts. Its not free ($99).
+Amazon Products Feed is a free chunk of perl code for putting an amazon products feed on your website.
+AquaNuke is a PHP-Nuke module.
+*/

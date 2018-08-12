@@ -1,0 +1,38 @@
+Components:
+
+    I]Data Storage :
+        1)Data Models:
+         Google Document Table
+         User Table
+         Access Table (doc_id, user_id, access_type)
+        2)i)Which db for real-time data?
+            Persistent layer : SQL for data models +  Storage System with folders, files, owners etc for document
+            Cache layer : Can be frequently updated, Replicated Data : User & content data,  metadata lookup table
+         ii)Where is the real-time data stored?
+            Data centers : Close/primary data center or Backup data center(server machines).
+                           If both are offline, we have loose data.
+
+    II]Data Services/ SOA :
+       Services across different geographical regions
+       Business Logic : Core Features :
+        Online editing and formatting : Markdown (Uses more complex too in reality) : For the front-end formatting, to store documents with corresponding formats.
+        Sharing (Collaboration)
+        Access control :
+
+    III]Networking :
+        Requests are distributed efficiently : Load balancer
+        Stateless Services : Customers does not have to any knowledge about the end point /state of the communication with the service(http)
+        Content delivery network (CDN) : Sever side caching and distribution of static content
+
+    IV}Testing :
+        Failure :
+          Any section of the system : How can we handle this? Replicate/third party services
+          Data centers : Manually rebooting or Provisioning
+        Consistency
+        Speed
+
+Online Link : http://blog.gainlo.co/index.php/2016/03/22/system-design-interview-question-how-to-design-google-docs/
+
+
+
+

@@ -1,0 +1,44 @@
+Block Diagram :
+
+Components:
+
+    I]Data Storage :
+        Media feature focused :
+        1)Data Models:
+         Media Table or NOSQL for scaling
+         User Table
+        2)i)Which db for real-time data?
+            Persistent layer : SQL for data models + GraphDB for entire network
+            Cache layer :  Master-Slave Model can be frequently updated, Replicated Data : User & content data, metadata lookup table
+            Logging layer : Hadoop Cluster(Data Analysis : recommendations for specific category videos frequently watched)
+         ii)Where is the real-time data stored?
+            Data centers : Close/primary data center or Backup data center(server machines).
+                           If both are offline, we have loose data.
+        3)i)Which data store for archived data? Hadoop
+          ii)Where archived data is stored ? Data warehouses, used for data analysis (category media viewed or posted by the user recommended to the user, trending content, follow new users recommendations uses graph structure
+        4)Real-time data has to be decoupled from data warehouse data.
+
+    II]Data Services/ SOA :
+       Services across different geographical regions
+       Business Logic : Core Features :
+           Timeline
+               User/Profile
+               Feed/Home/Trending
+           Get/Find Subscribers
+           Post, Get Media
+           Get others/Search : Use graph search for user or hashtags
+           Push Notification
+
+    III]Networking :
+            Routes requests and distributes them  efficiently : Load balancer
+            Stateless Services : Customers does not have to any knowledge about the end point /state of the communication with the service(http)
+            Content delivery network (CDN) : Sever side caching and distribution of static content
+
+    IV}Testing :
+            Failure :
+              Any section of the system : How can we handle this? Replicate/third party services
+              Data centers : Manually rebooting incase of failure
+              Millions subscribers user has posted : How can we handle the send request load in short span? Consider push notification setting : Event driven or in batches
+
+
+

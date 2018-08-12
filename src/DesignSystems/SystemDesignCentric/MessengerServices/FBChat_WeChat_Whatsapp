@@ -1,0 +1,60 @@
+Block Diagram :
+
+              - - - -                          - - - - - - - -                    - - - - - - -
+             |       |                        |  Server01     |  1⮠ MSG          |  Bob        |
+             | Alice |                        |               |  1⮡ ACK          | (Send)      |
+             |       |                        |               |                  |             |
+             |       |   2⮠ Delivers MSG(ID)  |   Server02    |  2⮡ Delivered(ID)| (Delivered) |
+             |       |                        |               |                  |             |
+             |       |    3⮡ Read(ID)         |   Server03    |  3⮡ Read(ID)     |  (Read)     |
+             |_ _ _ _|                        |_ _ _ _ _ _ _ _|                  |_ _ _ _ _ _ _|
+
+                                                    ⇵
+                                                 _ _ _ _ _ _
+                                                |           |
+                                                |    DB     |
+                                                |_ _ _ _ _ _|
+
+
+ Components :
+
+     I]Data Storage :
+        1)Data Models:
+        Chat
+            Private Chat
+            Group Chat
+        Message : (msg_id, msg_details)
+            StatusType : Send, Delivered, Read
+        User : (user_id,name)
+           StatusType : Offline, Online, Busy etc
+           StatusDetails :
+         2)i)Which db for real-time data?
+            Persistent layer : SQL for data models
+            Cache Layer : For messages
+            Logging layer : History and Audit Services
+         ii)Where is the real-time data stored?
+            Data centers : Close/primary data center or Backup data center(server machines).
+                           If both are offline, we have loose data.
+
+      II]Data Services/ SOA :
+            Services across different geographical regions
+            Horizontal and Vertical scaling
+            Business Logic : Core Features :
+                Chat
+                    Private Chat : One to One
+                    Group Chat : One to Many
+                Messages
+                    Status WorkFlow : Read, Delivered, Sent (Queue for storing msgs and Three way handshake, once delivered msg is flushed out and is ephemeral (queue is freed up when its empty)
+                Push Notification
+
+    III]Networking :
+          Routes requests and distributes them  efficiently : Load balancer
+          Stateless Services : Customers does not have to any knowledge about the end point /state of the communication with the service(http)
+
+    IV]Testing :
+        Accuracy:
+         Messages delivered in wrong order if one user goes offline
+        Failure :
+         Data centers : Manually rebooting incase of failure
+
+Online Video Link : https://www.youtube.com/watch?v=5m0L0k8ZtEs

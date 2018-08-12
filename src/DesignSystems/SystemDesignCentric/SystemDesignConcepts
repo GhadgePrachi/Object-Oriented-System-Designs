@@ -1,0 +1,87 @@
+Basic workflow :
+    i)Three major sub-tasks:
+        A)UI design -
+            Clearing i/p and o/p requirements
+            How user interacts with the system via User Interface(Web based or Mobile App based),
+            How user adds data to system and how result is presented back to the user by the system
+         [This is basically object oriented problem but in brief, discuss how you think the system should work wrt user]
+
+        B)Data design -
+            What and how data is stored in the system?
+            a)Entity types : eg User, Content
+            b)Data types : Structured(SQL) or Non-structured(NOSQl:Hadoop)
+
+        C)Processing design -
+            How data flows through the system? [from data storage to system & system to ui]
+            How and where data is validated by the system?
+            How data is transformed/processed as it moves into system and out of the system
+
+              - - - -          - - - - - - - - - - - - - - - -        - - - - - - - -
+             |      | Request | Load Balancer | Server01     |  ----> | Data Storage|
+             | UI   |  ---->  |               | Server02     |
+             |_ _ _ |  <----  |_ _ _ _ _ _ _ _|_ ... _ _ _ _ |  <---- |_ _ _ _ _ _ _|
+                       Reply
+          Client Device               Service System                  Database System
+
+    ii)How to make our system efficient?
+          Client:
+          Ease for user to access the system(UI)
+
+          Server:
+          Ease for the system(Web Services-not too complex and avoid unnecessary work/processing),
+          Server selections:
+            How many? dependent on Query per second(QPS)
+            More Servers(Horizontally scaled) vs More Memory for each server(Vertically scaled) tradeoffs
+            Memory per server? Large memory required in case of backend server else lag in response time with increasing requests.
+            HeavyCPU for servers? More calculations and fetching result(Dual Core)
+            Geo-located Servers? Response time is improved
+            Load balancer? Distributes equal request loads onto each server
+
+          Data:
+          Scalability and Flexibility for future demands(Web services)
+          Backup and Recovery and Availability of the data in case of failure
+          Partitioning and Replication
+          Caching and Read/Write Tradeoffs
+
+Online References:
+https://en.wikipedia.org/wiki/Systems_design
+http://blog.gainlo.co/index.php/2017/03/24/chapter-5-system-design-interviews-part-complete-guide-google-interview-preparation/
+https://www.youtube.com/watch?v=0163cssUxLA
+https://www.youtube.com/watch?v=DggPVpQmrsg
+https://www.youtube.com/watch?v=GcE-a7zO2N0
+
+Notes:
+1)Study what happens when we type url and enter? Domain Name Server mapping to ipaddress of nearest server
+2)What is web crawling? url click chaining
+3)What are web services?Processes request using business logic etc via Web, hence not requiring any platform setup unlike Mobile/Desktop application
+  Service communication Types?
+    i)Stateful : SMTP (Email services)
+    ii)Stateless : Http : Server does not store any info of client's session
+4)What is SOA? Service Oriented Architecture : Contains and maintains several web services.
+  Types?
+     i)Soap : What is SOAP(Simple object Access Protocol) are std communication protocol/rules for XML based msg/data exchange.SOAP uses different transport protocol like HTTP,SMTP
+     ii)REST : What is REST? Representational State Transfer
+5)Third party services :
+    a)Kafka Clusters: Event-Driven => Scalable Producer-Consumer(Subscriber) model for Kafka cluster with partition queues
+    Link : https://kafka.apache.org/intro
+    Advantages of Queue :
+    i) Can make the changes/updates in a batch, else if we make it for every change occurred can be expensive
+    ii))Can have asynchronous task, would not freeze the current activity till changes/updates are made
+    b)Azure CDN/CloudFlare/CacheFly/Akamai:Content Delivery Network
+    c)Redis Cluster : Cache layer, In-memory db, refreshed with every update or in specific time interval, faster than Cassandra ans MongoDB
+    Link : https://redis.io/documentation
+    d)Terroform : Data centers provisioning
+    d)Docker : It is a computer program that performs operating-system-level virtualization also known as containerization , where each containers is independent of other container, so if service is down would not affect others.
+    e)Mesos : Manages and collaborates theses services and it's life-cycles
+6)Data Models :
+    a)SQL : Relational DB (Structured)
+    b)XML/JSON : (Semi-Structured) : well represented (Data processing e.g Request/Response)
+    c)NOSQL(Not-Just-SQL) :
+        Document-Store : (Unstructured/Raw data)
+            MongoDB : Most Scalable, everything stored in documents and modified on the fly
+            Map-Reduce Jobs : File System(Log Files) are used for Analysis, downside can be ran only say twice a day and reads are slower
+        Wide column Store : Cassandra(Low latency : Stores in master machine and it will internally takes care of replicating across slave machine) : Columnar/tabular db
+        Key-Value store : Redis Cluster : For cache layer, in-memory db
+        Graph DB : Neo4j
+        Mahout : Recommendation Services depending on inputs, generates a score/tags say per user (Uses Machine learning to do data mining)
+

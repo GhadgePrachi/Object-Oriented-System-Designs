@@ -1,0 +1,20 @@
+1)Detect Duplicate UrLs
+    What are duplicate urls? Having identical URLs or content?
+    Let's assume the first for now.
+    a)In-memory storage : Use HashTable with key as URL and value as visited value
+    b)Disks storage/ Multiple Machines : How to split it? How to handle failure? Refer Caching Systems
+    
+2)Generate Random URLS (Pastebin)/ Tiny URLs
+    What are system requirements? System does not support user account, tracks only how many times page is accessed, old docs get deleted over some time
+    How to store db or file? filesystem allows slower read so let's go with db, Files Table (url, timestamp, ip_address), sharding of db for large data
+    How to make read access even faster? Use Cache system instead of db . Note : Make sure to handle collisions for key else will result in loss of data
+    How to generate url? Random GUID, MD5 (same first 43 bits of MD5 for same document different users for user account support functionality)
+    Analytics : Store raw data for each visit & count
+    How to make updates to cache and analytics data?
+    How to support user account?
+
+3)Web crawlers
+    1)How to avoid getting into loops? Detect loops.
+    2)How to detect loops? Ignore visited pages or mark it with low priority
+    3)What are visited pages? Defined by url, create signature for every page visited fresh.
+    4)Look for degree of similarity and children nodes(child www.abc/mn  for parent www.abc) should be given lower priority

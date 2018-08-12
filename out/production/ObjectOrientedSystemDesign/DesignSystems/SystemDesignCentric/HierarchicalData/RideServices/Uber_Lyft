@@ -1,0 +1,49 @@
+Block Diagram :
+
+Components:
+
+    I]Data Storage :
+    1)Data Models :
+      Rides/Trips Table : Previous rides info
+      User(Driver or Customer) Table : Profile, Ratings
+    2)i)Which db for real-time data?
+       Persistent Layer : NOSQL , Rides are independent atomic units + + GraphDB for City Map + SQL for data models
+       Cache layer : Redis Cluster, Map data/event data, cannot have live data, can be frequently updated, Replicated Data : History data, HashMap metadata lookup table
+       Logging layer : Hadoop Cluster, consists of live data : driver's position for trip route and is archived for analysis purposes.
+      ii)Where is the real-time data stored?
+        Data centers : Close/primary data center or Backup data center(server machines).
+                       If both are offline, we have loose data.
+    3)i)Which data store for archived data? Hadoop
+      ii)Where archived data is stored ? Data warehouses, used for data analysis (drivers counts in specific areas/rides count during specific day/date)
+    4)Real-time data has to be decoupled from data warehouse data.
+
+    II]Data Services/ SOA :
+       Services across different geographical regions.
+       Business Logic : Core Features :
+           a)Customer-Driver Matching & Mapping : Searching for Nearest Relevant  Uber/Lyft drivers & Connect to the chosen Uber/Lyft driver
+           b)Route Matching : Shortest Path : Start(Driver current location) to destination(Customer pickup)
+                              Shortest Path : Start(Customer pickup) to destination(Customer drop-off)
+             ETA's : Splitting graph algorithm : Pre-compute Using Dijkstra's algorithm excluding live traffic info & calculating routing and durations using A* and/or Travelling Salesman
+                     Historical data : Static edge weights (Faster but not completely accurate)
+
+            [Note : Graph(City Map) : Nodes are street intersections and Weighted Edges are street(street name,speed limits,traffic info)]
+
+
+    III]Networking :
+        Requests are distributed efficiently : Load balancer
+        Stateless Services : Customers does not have to any knowledge about the end point /state of the communication with the service(http)
+        Low latency db(e.g multiple users are requesting for the ride) : Cassandra
+             Cassandra : Key-Value
+                   Using HashTable
+                    Issues : If in-memory ,huge data , scalability issues
+                    Solutions : Compress data or splitting it across disks using say Sharding
+              //http://blog.gainlo.co/index.php/2016/06/14/design-a-key-value-store-part-i/
+              //http://blog.gainlo.co/index.php/2016/06/21/design-key-value-store-part-ii/
+
+    IV}Testing :
+        Failure :
+          Any section of the system : How can we handle this? Replicate/third party services
+          Data centers : Manually rebooting or Provisioning
+          Tons of Request : New Years Eve
+
+Online Video Link : https://www.youtube.com/watch?v=J3DY3Te3A_A&index=6&list=PLA8lYuzFlBqAy6dkZHj5VxUAaqr4vwrka
