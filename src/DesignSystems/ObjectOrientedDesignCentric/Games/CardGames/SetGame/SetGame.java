@@ -1,6 +1,8 @@
 package DesignSystems.ObjectOrientedDesignCentric.Games.CardGames.SetGame;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SetGame {
     final static String[] shapes = new String[]{"Diamond","Squiggle", "Oval"};
@@ -34,7 +36,32 @@ public class SetGame {
     }
 
     public void shuffleCards(){
-
+        //REFER CTC 17.02
     }
 
+    public boolean isValidSet(Card[] input){
+        int cardCount = input.length;
+        Set<Integer> numbers = new HashSet<>();
+        Set<String> shapes = new HashSet<>();
+        Set<String> colors = new HashSet<>();
+        Set<String> shadings = new HashSet<>();
+
+        for(Card card:input){
+            String shape = card.shape;
+            String shading = card.color;
+            String color = card.color;
+            int number = card.number;
+
+            shapes.add(shape);
+            shadings.add(shading);
+            colors.add(color);
+            numbers.add(number);
+        }
+
+        if((numbers.size()==1  && shadings.size()==1 && shapes.size()==1 && colors.size()==1) ||
+           (numbers.size()==cardCount  && shadings.size()==cardCount && shapes.size()==cardCount && colors.size()==cardCount))
+            return true;
+        return false;
+
+    }
 }
