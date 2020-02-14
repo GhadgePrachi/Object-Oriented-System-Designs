@@ -1,4 +1,26 @@
-Block Diagram :
+    Goal : Provides text based instant msgs to other users vis web or mobile interfaces
+
+    System Requirements :
+            Functional :
+                Allow users to have one-to-one conversations with other users
+                Keep track of user status - Online, Offline/Away, Busy etc
+                Keep track of msg status - Send, Delivered, Read
+
+            Non-Functional :
+                Scalable and flexible
+                Available
+                Consistency is okay to take a hit, it's okay for user not to see the msgs for a while but chat must be consistent on all the devices
+                Reliable, user's chat should not be lost
+                Calculate estimates,
+                    500 Million users of which 1 Million users are active everyday
+                       Each send 20 msgs each 100 bytes everyday => 1 Million * 20 * 100 = 2 Billion storage every day.
+                       Each send 20 msgs everyday => 1 Million * 20 *100 / 24*60*60 query per sec
+            Extended :
+                Group Chat, Push notifications
+
+    API's :
+
+    Diagram :
 
               - - - -                          - - - - - - - -                    - - - - - - -
              |       |                        |  Server01     |  1⮠ MSG          |  Bob        |
@@ -15,46 +37,39 @@ Block Diagram :
                                                 |    DB     |
                                                 |_ _ _ _ _ _|
 
+    Algorithm :
+            On receiving msg to be sent to other user by the sever , it saves to the db and does the following
+            Msg handling & Msg status & User status
+                Pull model :
+                    Periodically ask for new msgs
+                    For min latency need to request frequently, this will cause sending of empty responses often
+                Push model :
+                    Keep connection open, store user_id as key and value as connection_object in hashtable
+                    What if user goes offline, send delivery failure msg and ask user to resend if it's temporary failure & use long polling to re-establish the connection else, or store offline user and msgs @queue to the server and try resending when the user reconnects, once delivered msg is flushed out and is ephemeral (queue is freed up when its empty)
+                    When user is back online, broadcast the online status to everyone with delay of few second till user sends new msg to other user to make sure user does not go offline immediately.
+                    How to maintain the order of msgs? add timestamp sequencing to each msgs, each user will have same view of msgs on all devices but different users can have different view of chat
+                        E.g User1 sends M1 to User2 when User2 is offline then User2 sends M2 to User1 and then receives M1, so for User1 its M1,M2 & for User2 its M2,M1
 
- Components :
+    DB :
+        How many users? 500 Millions
+        How much storage? 1 Billion
+        DB Schema :
+            User Table (user_id, name, location, dob)
+            UserChat Table(user1_id, user2_id, chat_id)
+        How to store?
+            File or DB?
+                File easy to maintain, too slow to fetch queries
+            SQL or No-SQL DB?
+                SQL , Too slow for frequent updates for small bytes msgs and frequent fetch request as well
+                No-SQL preferred, HBase i.e column based solution for quicker access and also since there is no relationship between the chats, also paginate for fetching data from the server
 
-     I]Data Storage :
-        1)Data Models:
-        Chat
-            Private Chat
-            Group Chat
-        Message : (msg_id, msg_details)
-            StatusType : Send, Delivered, Read
-        User : (user_id,name)
-           StatusType : Offline, Online, Busy etc
-           StatusDetails :
-         2)i)Which db for real-time data?
-            Persistent layer : SQL for data models
-            Cache Layer : For messages
-            Logging layer : History and Audit Services
-         ii)Where is the real-time data stored?
-            Data centers : Close/primary data center or Backup data center(server machines).
-                           If both are offline, we have loose data.
 
-      II]Data Services/ SOA :
-            Services across different geographical regions
-            Horizontal and Vertical scaling
-            Business Logic : Core Features :
-                Chat
-                    Private Chat : One to One
-                    Group Chat : One to Many
-                Messages
-                    Status WorkFlow : Read, Delivered, Sent (Queue for storing msgs and Three way handshake, once delivered msg is flushed out and is ephemeral (queue is freed up when its empty)
-                Push Notification
+    Performance : Refer System Design Concepts
+                Caching layer and replication : How to make read access even faster? Use Cache system instead of db for Timeline/Feed, live data.
+                Load Balancer
+                Data redundancy and replication for single point of failure
+                Data partition/sharding based on user_id, message_id
+                Data pruning/ clean up
+                Data security
 
-    III]Networking :
-          Routes requests and distributes them  efficiently : Load balancer
-          Stateless Services : Customers does not have to any knowledge about the end point /state of the communication with the service(http)
-
-    IV]Testing :
-        Accuracy:
-         Messages delivered in wrong order if one user goes offline
-        Failure :
-         Data centers : Manually rebooting incase of failure
-
-Online Video Link : https://www.youtube.com/watch?v=5m0L0k8ZtEs
+    Online Video Link : https://www.youtube.com/watch?v=5m0L0k8ZtEs

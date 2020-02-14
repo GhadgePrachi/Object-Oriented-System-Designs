@@ -1,0 +1,35 @@
+    Goal : Crawl web i.e browse and download www
+
+    System Requirements :
+        Functional :
+            Monitor structure or content changes in a web page
+            Validate structure of web
+            Validate copyrights
+            Detect duplicate
+            Handle multimedia files
+        Non-Functional :
+            Scalability and flexibility
+
+    Algorithm  & Diagram :
+
+        Client --->HTML Fetcher---->Extractor-------> DB
+                         ↑           |
+                         |           |
+                         |         ↙
+                     URL Frontier
+
+
+    Performance : Refer System Design Concepts
+            Scalability & flexibility
+            Fault tolerance : Consistent hashing to removed dead hosts
+            Data partition : Url visits, Url checksm for dedups, Document checksum for dedups
+            Data pruning/ clean up
+            Data security : Crawler traps :
+                1)How to avoid getting into loops? Detect loops.
+                2)How to detect loops? Ignore visited pages or mark it with low priority
+                3)What are visited pages? Defined by url, create signature for every page visited fresh.
+                4)Look for degree of similarity and children nodes(child www.abc/mn  for parent www.abc) should be given lower priority
+
+
+
+

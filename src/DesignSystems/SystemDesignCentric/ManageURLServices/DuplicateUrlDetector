@@ -1,0 +1,62 @@
+    Goal :
+        Detect Duplicate UrLs
+            What are duplicate urls? Having identical URLs or content?
+
+    System requirements :
+        Functional :
+            Given an url able to detect if it's duplicate
+            Allow to add new web pages
+            Allow to delete new web pages
+        Non-Functional :
+            Refer System Design Concepts
+            Depends on the operation
+            In details, eg if 200 read/write request every sec would mean 4*200*3600*12 in a day =>17280000(17 Million) * 30*12 in a year =>6,120,000,000 (6 Billion)
+        Extended :
+            System does not support user account
+            Old ones get deleted over some time
+            Analytics : Tracks only how many times page is accessed
+
+    API's :
+        addUrl(api_dev_key, url_name, timestamp, expiration) (internally this would create url_id and also create page_content_hash and update page content tp external storage with url_id as key)
+        getUrl(api_dev_key, url_id)
+        deleteUrl(api_dev_key, url_id)
+
+    DB :
+        How many records? billions
+        Storage of each url->40 bytes for 40 character & each page hash->4 bytes
+        How to store?
+            a)Simple db storing all data in hash table
+            b)SQL or NO SQL
+            Url Table(url_id, url_name, timestamp, with external storage only :external_obj_ref)
+            Url_Page Table(url_page_id, url_id, page_content) or External Storage => (external_obj_ref, page_content)
+        Scale :
+            Disks storage/ Multiple Machines : How to split it? How to handle failure? Refer Caching Systems
+
+    Algorithm :
+         a)Case 01 : Check for url_names only
+         b)Case 02 : Check for the content of the page
+    Diagram :
+
+      Client --->    Server ----------------------------->Cache Layer
+                            |----------------------------->Object DB
+                            |----------------------------->key DB
+
+    Performance : Refer System Design Concepts
+       How to make read access even faster? Use Cache system instead of db . Note : Make sure to handle collisions for key else will result in loss of data
+       Scalability
+       Load Balancer
+       Data redundancy and replication for single point of failure
+       Caching layer and replication
+       Data partition
+       Data pruning/ clean up
+       Data security
+
+
+    Bonus :
+       Analytics :
+          Store raw data for each visit & count
+       Testing :
+
+
+
+

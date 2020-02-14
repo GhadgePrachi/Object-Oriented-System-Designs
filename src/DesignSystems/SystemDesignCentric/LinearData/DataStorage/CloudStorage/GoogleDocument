@@ -1,0 +1,50 @@
+    Goal : Add, delete, share and edit/format documents
+
+    System Requirements :
+            Functional :
+                Allow user to add/delete document
+                Allow user to share document
+                Allow user to edit/format document online/offline
+                Allow users to edit simultaneously shared documents
+            Non-Functional :
+                Scalable and flexible
+                Available
+                Consistency, must be consistent on all the devices
+                Reliable, data should not be lost
+                Calculate estimates,
+
+    Algorithm :
+        Online & offline editing & formatting:
+            Offline change saved to device and updates once reconnected to server
+            Markdown (Uses more complex too in reality) : For the front-end formatting, to store documents with corresponding formats.
+        Sharing :
+            For simplicity lets assume can be shared among two users.
+            Server keeps two twin copies of document, one per user and the full revision history
+            So when user1 updates, it sends the update along with last revision seen by user1
+            Now if user2 updates as well, it will send changes to server, and since the server know what changes were made for what version, it updates the changes accordingly.
+        Access control : Refer Data security
+
+    DB :
+        How many? Millions of users
+        How much? 5 Files of 500 KB everyday
+        DB Schema :
+            User Table (user_id, name, location, dob)
+            Access Table (doc_id, user_id, access_type)
+        File or DB?
+        SQL or No-SQL?
+            SQL for above data models
+            No-SQL for external file storage and metadata
+
+    Performance : Refer System Design Concepts
+                Caching layer and replication : How to make read access even faster? Push data closer to the user and cache hot data rows
+                Load Balancer
+                Data redundancy and replication for single point of failure
+                Data partition/sharding based on user_id, document_id
+                Data pruning/ clean up
+                Data security
+
+Online Link : http://blog.gainlo.co/index.php/2016/03/22/system-design-interview-question-how-to-design-google-docs/
+
+
+
+

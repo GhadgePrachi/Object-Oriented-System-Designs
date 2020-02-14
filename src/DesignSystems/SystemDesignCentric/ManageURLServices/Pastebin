@@ -1,0 +1,70 @@
+    Goal :
+        Generate Random URLS for any random text entered
+
+    System requirements :
+        Functional :
+            Generate random url for any random text entered
+            Allow user to pick custom alias for the url
+            Allow user to upload new data/update the text
+            Limit text quantity : Not more than 10 MB
+        Non-Functional :
+            Refer System Design Concepts
+            Read heavy (100 Reads vs 1 Write)
+            Random urls generated should not be predictable
+            In details, eg if 200 read request every sec would mean 200*3600*12 in a day =>17280000(17 Million) * 30*12 in a year =>6,120,000,000 (6 Billion)
+        Extended :
+            System does not support user account
+            Old ones get deleted over some time
+            Analytics : Tracks only how many times page is accessed
+
+    API's :
+        addPaste(api_dev_key, api_paste_data, custom_url, user_name, timestamp, expiration)=> string if created or error code if not
+        getPaste(api_dev_key, api_paste_key) => url string if able to access or error code if not
+        deletePaste(api_dev_key, api_paste_key) => string if deleted or error code if not
+
+    DB :
+        How many records? billions
+        Storage of each record? url hash links small can be in SQL DB , pasted data up to 10MB use external storage
+        How to store it?
+            Metadata storage :
+                SQL or Column based NOSQL
+                DB Schema : URL(url_id, content_key_for_object_storage, user_id) and User(user_id,...)
+            Object storage : Documents/pasted data like Amazon S3easy to scale
+
+    Algorithm :
+        How to generate/encode url? Random GUID, MD5 (same first 43 bits of MD5 for same document different users for user account support functionality with incrementing counter)
+        Going offline or make it faster? Standalone Key generation system, handle concurrency
+
+    Diagram :
+
+        Client --->     Server ----------------------------->Cache Layer
+                        ^     |----------------------------->Object DB
+                        |     |----------------------------->Metadata DB
+                        |
+                        KGS
+                        ↑
+                        |
+                        |
+                        ↓
+                      Key-DB
+
+    Performance : Refer System Design Concepts
+           How to make read access even faster? Use Cache system instead of db . Note : Make sure to handle collisions for key else will result in loss of data
+           Scalability
+           Load Balancer
+           Data redundancy and replication for single point of failure
+           Caching layer and replication
+           Data partition
+           Data pruning/ clean up
+           Data security
+
+
+       Bonus :
+           Analytics :
+               Store raw data for each visit & count
+               How to make updates to cache and analytics data?
+           How to support user account?
+           Testing
+
+
+

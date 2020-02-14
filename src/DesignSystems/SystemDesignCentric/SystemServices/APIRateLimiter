@@ -1,0 +1,64 @@
+    Goal : Restrict the number of request within time frame(is it wrt to user/ip-address)
+
+    System Requirements :
+        Functional :
+            Restrict the number of request within time frame(is it wrt to user/ip-address)
+        Non-Functional :
+            Scalable, support on different servers/clusters
+            Availability and reliability
+            Low/Minimal Latency for responses
+        Extended :
+            Analysis : Suspicious user, cost and resources usage, revenue
+
+    DB :
+        How many record? billions
+        8 bytes of url_id & 4/2 bytes of epoch time & 4/2 bytes of count
+        How to store? Simple db storing all data in hash table
+
+    Algorithms :
+        Types :
+            Hard throttling : No of API request can not exceed the limit
+            Soft throttling : No of API request can not exceed limit% of total msgs
+            Elastic/Dynamic throttling : API request can exceed if system has available resources
+        Methods :
+            Fixed Window with counters
+                Fixed window : Count <=2 within 1 minute /60 sec time frame
+                         Request1 |(Count=1,00000001)
+                                  |Access granted
+                                  ↓
+                         Request2 |(Count=2,00000002)
+                                  |Access granted
+                                  ↓
+                         Request3 |(Count=3,00000003)
+                                  |Access denied
+                                  ↓
+            Sliding Window
+                Sliding window : Count <=2 within 1 minute /60 sec time frame
+                                         Request1 |(00000001)
+                                                  |Access granted
+                                                  ↓
+                                         Request2 |(00000001,00000002)
+                                                  |Access granted
+                                                  ↓
+                                         Request3 |(00000001,00000002,00000003)
+                                                  |Access denied
+                                                  ↓
+            Sliding Window with counters : Club above two
+
+    Diagram :
+
+        Client ------>Server(Cache)
+                        |
+                        |
+                        ↓
+                     Rate limiter ------->DB
+
+    Performance : Refer System Design Concepts
+        How to make read access even faster? Use Cache system instead of db . Note : Make sure to handle collisions for key else will result in loss of data
+        Scalability
+        Load Balancer
+        Data redundancy and replication for single point of failure
+        Caching layer and replication
+        Data partition
+        Data pruning/ clean up
+        Data security

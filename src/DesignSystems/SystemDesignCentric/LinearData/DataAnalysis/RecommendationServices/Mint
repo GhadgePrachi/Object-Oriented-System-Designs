@@ -1,0 +1,47 @@
+    Goal :
+            Financial Manager
+
+    System Requirements :
+         Add or remove accounts Service
+         Transaction updates Service
+         Transaction extraction(Categorizing)
+         Recommendation(Budget Suggestions) Service
+
+    API's :
+        addAccount
+        deleteAccount
+        addTransaction
+    DB :
+       How many users? Millions
+       How many records/transactions each user? 10 per day for 3/4th of total active users
+       File or DB?
+           Relation DB, so SQL
+           Data Models :
+              User Table (user_id, first_name, last_name, dob)
+              Accounts Table (account_id, user_id, account_type)
+              Transaction Table : (transaction_id,transaction_details, user_id)E.g SpendingHabits , Finite data which is later fetched for analysis purposes (NOSQL Solutions for scaling data)
+       SQL or NOSQL?
+            For Scalability purposes use NO SQL solution later on
+
+    Algorithms :
+        Transaction Extraction(Categorizing) and Recommendation(Budget Suggestions) Service :
+            a)Uses Task Queue :
+                1)To have asynchronous activities
+                2)We want to build a task queue system that can prioritize some task types over others, while still ensuring that all tasks will be performed eventually.
+                That is, we wouldn't want a low priority task to essentially "starve" because there are always higher priority tasks.
+            b)Categorization : Based on Housing, Gas, Food etc : Can use log Files(Map-Reduce Jobs (twice a day), Pig Scripts, Hive) instead of SQL DB(SQL Queries) for frequent and tons of updates
+            c)Budgeting : Based on monthy_spendng etc. Should not exceed a specific budget may be depending on the earnings!
+            d)Send Notification : Via Email (Have an email system)
+            or Can use Kafka Services
+        SQL Queries :
+            1)Get all transactions for user id
+            SELECT * from transaction where user_id = 1;
+            2)Get no of transactions for user id
+            SELECT count(*) from transaction where user_id = 1;
+
+    Performances :
+        Testing
+
+
+    Online Link : https://github.com/donnemartin/system-design-primer/tree/master/solutions/system_design/mint
+

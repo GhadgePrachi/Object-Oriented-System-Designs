@@ -1,0 +1,77 @@
+    Goal :
+        Generate Random tiny URLS for any given URL
+
+    System requirements :
+        Functional :
+            Generate tiny url for original url for the user
+            Allow user to pick custom alias for the url
+            Allow user to choose the tiny url against generated list
+            Redirect the tiny url requests to original url
+        Non-Functional :
+            Refer System Design Concepts
+            Read heavy (100 Reads vs 1 Write)
+            Random urls generated should not be predictable
+            In details, eg if 200 read request every sec would mean 200*3600*12 in a day =>17280000(17 Million) * 30*12 in a year =>6,120,000,000 (6 Billion)
+        Extended :
+            System does not support user account
+            Old ones get deleted over some time
+            Analytics : Tracks only how many times page is accessed
+
+
+    API's :
+        createURL(api_dev_key, original_url, custom_name, user_name, timestamp, expiration_time) => string if created or error code if not
+        getURL(api_dev_key, url_key) => url string if able to access or error code if not
+        deleteURL(api_dev_key, url_key) => string if deleted or error code if not
+
+    DB:
+        How many records? billions
+        Storage of each record? small in KB
+        DB Schema: Url Table (url_id, original_url,  timestamp, user_id) and User Table( user_id,...)
+        Now coming to imp decision, how to store?
+            DB or File?
+                Filesystem allows slower read so let's go with db
+            NOSQL or SQL?
+                Are those records related? no user-user relation just user-data relationship, so NoSQL column based DynamoDB or Cassandra etc
+                Also scaling is easier with NOSQL (Sharding/Horizontal Partitioning of db for really large data)
+
+    Algorithm:
+        How to generate/encode url? Random GUID, MD5 (same first 43 bits of MD5 for same document different users for user account support functionality with incrementing counter)
+        Going offline? Standalone Key generation system, handle concurrency
+
+    Diagram :
+                             original_url
+                            ------------------------------->
+        Client --->  Server                                   DB
+                       ↑    <--------------------------------
+                       |      tiny_url
+                       |
+                       |
+                       |
+                Key-Generating-System(KGS)
+                   ↑     ↑          |
+                   |     |          |
+                   |     |          |
+     Fail/Duplicate \    |Success  /
+                     \   |        /
+                      \  |       / Encoded Tiny URL
+                       \ |      /
+                         |    ↙
+                       key-DB
+
+
+    Performance : Refer System Design Concepts
+        Caching layer and replication : How to make read access even faster? Use Cache system instead of db . Note : Make sure to handle collisions for key else will result in loss of data
+        Scalability
+        Load Balancer
+        Data redundancy and replication for single point of failure
+        Data partition
+        Data pruning/ clean up
+        Data security
+
+
+    Bonus :
+        Analytics :
+            Store raw data for each visit & count
+            How to make updates to cache and analytics data?
+        How to support user account?
+        Testing :

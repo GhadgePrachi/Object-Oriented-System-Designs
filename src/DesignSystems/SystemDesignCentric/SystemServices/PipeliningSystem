@@ -1,0 +1,22 @@
+    Goal :
+        Pipelining is the process of accumulating instruction from the processor through a pipeline
+        Pipelining is a technique where multiple instructions are overlapped
+
+    System Requirements :
+        It allows storing and executing instructions in an orderly process.
+
+    Algorithms :
+        A five-stage (five clock cycle) ARM state pipeline is used :
+            Fetch
+            Decode
+            Execute
+            Memory
+            Write-back stages.
+
+        Types :
+        Instruction pipelines
+        Graphics pipelines
+        Software pipelines
+        HTTP pipelining : The technique of issuing multiple HTTP requests through the same TCP connection, without waiting for the previous one to finish before issuing a new one.
+
+    Performance :

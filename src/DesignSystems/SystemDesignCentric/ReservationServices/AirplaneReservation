@@ -1,0 +1,128 @@
+    Goal : Reserve/book
+
+    System Requirements :
+        Scalable
+        Available and reliable
+        Minimum Latency for the responses but consistent (no two people can book same slot)
+
+    API's :
+
+    DB :
+
+    Algorithm :
+
+        public class InterviewQuestion_AirplaneSeatingArrangement {
+
+                public static int SEGMENTS_COUNT = 3;
+                public static int FIRST_SEGMENT = 3;
+                public static int SECOND_SEGMENT = 4;
+                public static int THIRD_SEGMENT = 3;
+
+                public  static int solution(int N, String S) {
+                    // write your code in Java SE 8
+                    if(S==null || S.length()==0) return 3*N;//All seats are not booked
+
+                    String[] reservations = S.split(" ");
+                    Arrays.sort(reservations);
+
+                    /**Initialize seating arrangment**/
+                    Map<Integer,List<List<Integer>>> seatingArrangement = initializeSeatingArrangement(N);
+
+                    /**Marked reserved seating**/
+                    for(int i=0;i<reservations.length;i++) {
+                        String currentSeat = reservations[i];
+                        int currentRow = Integer.parseInt(currentSeat.substring(0, 1));
+                        String currentColumn = currentSeat.substring(1);
+
+                        switch (currentColumn) {
+                            case "A":
+                                seatingArrangement.get(currentRow).get(0).set(0, 1);
+                                break;
+
+                            case "B":
+                                seatingArrangement.get(currentRow).get(0).set(1, 1);
+                                break;
+
+                            case "C":
+                                seatingArrangement.get(currentRow).get(0).set(2, 1);
+                                break;
+
+                            case "D":
+                                seatingArrangement.get(currentRow).get(1).set(0, 1);
+                                break;
+
+                            case "E":
+                                seatingArrangement.get(currentRow).get(1).set(1, 1);
+                                break;
+
+                            case "F":
+                                seatingArrangement.get(currentRow).get(1).set(2, 1);
+                                break;
+
+                            case "G":
+                                seatingArrangement.get(currentRow).get(1).set(3, 1);
+                                break;
+
+                            case "H":
+                                seatingArrangement.get(currentRow).get(2).set(0, 1);
+                                break;
+
+                            case "J":
+                                seatingArrangement.get(currentRow).get(2).set(1, 1);
+                                break;
+
+                            case "K":
+                                seatingArrangement.get(currentRow).get(2).set(2, 1);
+                                break;
+
+                        }
+                    }
+
+                    /**Check for three consecutive states**/
+                    int groupOfThreeConsecutiveSeatings = 0;
+                    for(int row = 1 ; row<=N ;row++){
+                        if(!seatingArrangement.get(row).get(0).contains(1))  groupOfThreeConsecutiveSeatings++; //For any row A, B, C are not booked
+
+                        if(!seatingArrangement.get(row).get(1).contains(1)) groupOfThreeConsecutiveSeatings++; //For any row D, E, F, G are not booked
+                        else if(seatingArrangement.get(row).get(1).get(1)==0 &&
+                                seatingArrangement.get(row).get(1).get(2)==0){
+                            if(seatingArrangement.get(row).get(1).get(0)== 0 || seatingArrangement.get(row).get(1).get(3)==0)
+                                groupOfThreeConsecutiveSeatings++;
+                        }//For any row either D or G is not booked along with E, F
+
+
+                        if(!seatingArrangement.get(row).get(2).contains(1)) groupOfThreeConsecutiveSeatings++;//For any row H, J, K are not booked
+                    }
+
+                        return  groupOfThreeConsecutiveSeatings;
+                    }
+
+                public static Map<Integer,List<List<Integer>>> initializeSeatingArrangement(int N){
+                    Map<Integer,List<List<Integer>>> seatingArrangement = new HashMap<>();
+
+                    for(int row = 1; row<=N ; row++){
+                        ArrayList r = new ArrayList<>(SEGMENTS_COUNT);
+
+                        ArrayList c1 = new ArrayList<>(FIRST_SEGMENT);
+                        for(int i =0;i<FIRST_SEGMENT;i++) c1.add(0);
+                        r.add(c1);
+
+                        ArrayList c2 = new ArrayList<>(SECOND_SEGMENT);
+                        for(int i =0;i<SECOND_SEGMENT;i++) c2.add(0);
+                        r.add(c2);
+
+                        ArrayList c3 = new ArrayList<>(THIRD_SEGMENT);
+                        for(int i =0;i<THIRD_SEGMENT;i++) c3.add(0);
+                        r.add(c3);
+
+                        seatingArrangement.put(row,r);
+
+                    }
+                    return seatingArrangement;
+
+                }
+
+            }
+
+    Performance :
+

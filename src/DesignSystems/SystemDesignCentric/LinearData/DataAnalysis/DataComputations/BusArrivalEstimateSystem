@@ -1,0 +1,52 @@
+    Goal : Display upcoming bus schedules every bus stop for a town
+
+    System Requirements :
+        Functional :
+            User is able to view the bus arrival timings at a particular bus-stop
+
+        Non-Functional :
+            Scalable, should be able to add new buses
+            Available and Reliable
+            Consistency
+            Correctness : Arrival time should be accurate not more than 200 ms delay
+
+    API's :
+
+    DB :
+        How many? Per city 50 buses and 200 bus stops
+        DB Schema :
+            Bus (bus_id, registration_no, size, color)
+            BusStop (bus_stop_id, lat, lon, city, state, country)
+            Bus_BusStop (bus_stop_id, bus_id)
+            Bus_location(bus_id, lat, lon)
+        How to store?
+            File or DB ? File easy to maintain, read is very slow, use db
+            SQL or No-SQL DB?
+                SQL : Bus, BusStop, Bus_BusStop
+                External disk on server : Bus_location
+
+    Diagram :
+
+        Display Board<--------------------> Notification Server (every minute send updates)
+         (@Bus stop)                               ^
+                                                   |
+                                            Aggregation Server
+                                                   ^
+                                                   |
+                                                   |
+                                            Arrival Estimate System Server----------> DB(bus stop & buses list)
+                                                   ^
+                                                   |
+                                                   |
+        Bus -------------------------> Bus Location Tracking Server --------------> External Disks
+                                                                                    (Bus location history
+                                                                                    for traffic-analysis etc)
+
+    Performance : Refer System Design Concepts
+                Caching layer and replication : How to make read access even faster? Push data closer to the user and cache hot data rows
+                Data redundancy and replication for single point of failure
+                Load Balancer
+                Proxy Servers & Consistent Hashing
+                Data partition/sharding based on bus_stop_d or bus_stop_lat , bus_stop_lon
+                Data pruning/ clean up
+                Data security

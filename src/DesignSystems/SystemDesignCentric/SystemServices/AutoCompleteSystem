@@ -1,0 +1,21 @@
+    Goal : Auto complete Suggestions for search of the prefix text entered
+
+    System Requirements:
+        Scalable
+        Available and reliable
+        Minimal latency for the responses
+        Number of results returned, are those sorted, most recent or most relevant have higher ranking/weight
+
+    API :
+        search(api_dev_key, search_term, results_count, sorted)
+
+    DB :
+        Distributed Cache/MemCached (Zookeeper) for different instances of tries and distributed nodes as well, good for reads
+        Cassandra for phrase weights computations
+
+    Algorithms : Tries
+
+    Diagram :
+        Tries Structure and add/search request flow
+
+    Performance :

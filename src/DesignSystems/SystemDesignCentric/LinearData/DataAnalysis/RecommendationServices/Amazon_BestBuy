@@ -1,16 +1,26 @@
-Core Features:
-    Shopping Cart : Refer a part of the blog mentioned below
-    Sales Rank Generation :
-        Basic block diagram
-        Data Storage : SQL :
-            1)Join Category and Product tables  and frequent(hourly or daily? writes to db are all expensive
-            2)Use Denormalization for better read performances and have a single table with category and product etc, this will still be expensive
-            3)Use Log files for the above(purchases made) storage  for analysis purposes and use Map_Reduce to categorize(based on the seller) and get rank
-            4)This design is for without subcategory, for subcategories what changes we would want?
-        Note : Refer Cache System
+    Goal : E-commerce solutions and sales rank generation
+
+    System Requirements :
+
+    API's :
+
+    DB :
+
+    Algorithms :
+        Shopping Cart & Order Management System using Queue
+        Sales Rank Generation :
+            Using SQL Solution
+                1)Join Category and Product tables  and frequent(hourly or daily? writes to db are all expensive
+                2)Use Denormalization for better read performances and have a single table with category and product etc, this will still be expensive
+                3)Use Log files for the above(purchases made) storage  for analysis purposes and use Map_Reduce to categorize(based on the seller) and get rank
+                4)This design is for without subcategory, for subcategories what changes we would want?
+
+    Performance :
 
 
-/*
+
+/********************* NOTES *********************/
+
 Amazon Buying and Selling workflow :
 
 Some Amazon information that needs to be understood:
@@ -35,4 +45,5 @@ Here are some other toolsets:
 amazon.pl is a PERL library for using AWS from CGI scripts. Its not free ($99).
 Amazon Products Feed is a free chunk of perl code for putting an amazon products feed on your website.
 AquaNuke is a PHP-Nuke module.
-*/
+
+/********************************************************/

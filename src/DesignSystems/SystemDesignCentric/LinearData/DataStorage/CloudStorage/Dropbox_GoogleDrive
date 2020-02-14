@@ -1,0 +1,54 @@
+    Goal : Upload/Store and exchange data across multiple devices
+
+    System Requirements :
+            Functional :
+                Allow user to add/delete documents to drive
+                Allow user to search documents in the drive
+                Allow user to share/exchange documents
+            Non-Functional :
+                Scalable and flexible
+                Available
+                Consistency, must be consistent on all the devices
+                Reliable, data should not be lost
+                Calculate estimates,
+
+    Algorithm : Refer Diagram
+
+    DB :
+        SQL : User Table
+        NoSQL : Cloud/Block & Metadata Storage
+
+    Diagram :
+
+                                    (Req, Response Queue)
+                        Notification  <- Sync Queue<---- METADATA SERVER ------> Metadata Storage
+                          Services                         ^
+                               |                           |
+        Client \               |                           |
+                    \          |
+                          \    ↓
+        Client  ---------   Services ----------->    Load Balancer
+                           /        \                      ^
+                      /                                    |
+        Client  /                       \                  |
+                                                           |
+                                            \              |
+                                                           |
+                                               \           |
+                                                           |
+                                                  ↓        |
+                                                   BLOCK SERVER  -------->  Block Storage
+       ______________________
+      | Chunker   Indexer    |
+      |    CLIENT            |
+      | Watcher   InternalDB |
+      |______________________|
+
+
+    Performance : Refer System Design Concepts
+                Caching layer and replication : How to make read access even faster? Push data closer to the user and cache hot data rows
+                Load Balancer
+                Data redundancy and replication for single point of failure
+                Data partition/sharding based on user_id, document_id
+                Data pruning/ clean up
+                Data security

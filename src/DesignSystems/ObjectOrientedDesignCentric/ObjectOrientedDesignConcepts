@@ -1,4 +1,12 @@
-Basic workflow :
+OO Design :
+a)Who are the users?
+b)User and System Components Interactions
+c)Class or Sequence diagram for brief overview
+d)Must include the below OOPs concepts
+    1)Abstraction,Encapsulation,Inheritance,Polymorphism
+    2)HAS-A relationship : Aggregation(Object exist on it's own, eg Game has a list of players) , Composition(Object can not exist on it's own, eg Game has a GameBoard object)
+    3)IS-A relationship : Super/Subclass (eg Manager is an employee, Respondent is an employee, Director is an employee)
+e)Basic workflow for components:
     1)How many classes/concepts we need?
     2)Define each class
         i)Types: What does the class represent?
@@ -51,11 +59,6 @@ Basic workflow :
              b)Check for short -circuiting cases/inputs - optimization
              c)Generic code [Example size>=2]
 
-     3)Try to make the code as generic as possible : Start simple if you want but then atleast mention that you want to make it generic may be in a TODO comment
-
-Class design OOPS concept :
-1)Abstraction,Encapsulation,Inheritance,Polymorphism
-2)HAS-A relationship : Aggregation(Object exist on it's own, eg Game has a list of players) , Composition(Object can not exist on it's own, eg Game has a GameBoard object)
-3)IS-A relationship : Super/Subclass (eg Manager is an employee, Respondent is an employee, Director is an employee)
+     3)Try to make the code as generic i.e extendable and adaptable as possible : Start simple if you want but then atleast mention that you want to make it generic may be in a TODO comment
 
 https://en.wikipedia.org/wiki/Object-oriented_design

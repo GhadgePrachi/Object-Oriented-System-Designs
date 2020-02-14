@@ -1,0 +1,78 @@
+    Goal : Upload, Share-View and Search photos/videos
+
+    System Requirements :
+        Functional :
+            Allow users to upload/delete/download photos/videos
+            Allow users to follow other users
+            Search other photos/videos by titles
+            Add stats i.e likes/dislikes, total views to the photos/videos
+            Add comments to photos/videos
+            Display New's feed : User may follow many people or groups, user may post image/video/text, append new updates to current list as they arrive for current users
+
+        Non-Functional :
+            Scalable and flexible
+            Available
+            Consistency is okay to take a hit, it's okay for user not to see the photo/video for a while
+            Reliable, user's data/photos/video should not be lost
+            Min Latency not more than 200 ms(3 min) for news feed generation
+            Read heavy
+            Calculate estimates,
+                500 Million users with 1 Millions users active per day, each photo is of 500KB , 500 * 1 Million * 365 (days) data usage
+
+    API's :
+        create(api_dev_key, content_id, user_name, timestamp)
+        delete(api_dev_key, content_id)
+        search(api_dev_key, search_terms, maximum_results_to_return, sort, page_token)
+        getUserFeed(api_dev_key, user_id, since_id, count, max_id, exclude_replies)
+        [Get Friends/Followers : Use graph search for user]
+        [Top trending :  Based on hashtags]
+
+    DB :
+        How many users? 500 Millions
+        How many media files per user per day? Out of 500 Millions, say 1 Million are active every day and share  say 5 posts 200 MB each
+        DB Schema :
+            User Table (user_id, user_name, location, dob, about_me)
+            User Follower Table(user_id, follower)
+            Post Content/Media Metadata Table(media_id, user_id, timestamp, location)
+        How to store?
+            DB or File?
+               Filesystem allows slower read so let's go with db
+            SQL  or No-SQL?
+                SQL : Above tables
+                No-SQL : Media details ( alternative : GraphDB for user network instead of using SQL solutions)
+
+    Algorithm :
+            Get keyword, Search : Use graph search for users or keywords
+                Graph Search in the network : Efficient response in minimal time frame
+                Brute Force : Use Breadth-First-Search one sided on one machine
+                Improve : Use Breadth-First-Search both sided on one machine
+                Improve : Use Breadth-First-Search both sided on multiple machine (Sharding)
+            NewsFeed :
+                How? Get list of followers/friends, generate recent 100 each and then merge and sort and rank i.e get top 100
+                When? When requested or Pre-generate the Newsfeed for every user on UserNewsFeeds Table
+                Types? Push, pull and hybrid
+    Diagram :
+
+                                                            Image Storage
+                                                             /
+                upload                                      /
+        User A -------------->  Image/Video Hosting System |
+                <------------    Index Server              |
+                 view/search   NewsFeed Generation Service |
+                                          ^                 \
+                                          |                  \
+                                          |                   \
+                                          |                  Image Metadata
+                                          |
+        User A  <-----------   Feed Update
+        User B  <-----------
+        User C  <-----------
+                update posts
+
+    Performance : Refer System Design Concepts
+                Caching layer and replication : How to make read access even faster? Use Cache system instead of db for Timeline/Feed, live data.
+                Load Balancer
+                Data redundancy and replication for single point of failure
+                Data partition/sharding based on word/hashtags, instagram/tweet object id
+                Data pruning/ clean up
+                Data security

@@ -1,0 +1,61 @@
+    Goal : Request rides
+
+    System Requirements :
+        Functional :
+
+        Non-Functional :
+
+    API's :
+
+    DB :
+        How many users? 500 Million users
+        DB Schema :
+            User(Driver or Customer) Table : (user_id, name, address, ratings)
+            Trip Table(Previous trip rides info) : (user_id, user_id, start_location, end_location, trip_time, cost)
+        File or DB? Files are easier to maintain but slow reads, db
+        SQL or No-SQL ?
+            Persistent Layer : NOSQL , Rides are independent atomic units  + GraphDB for City Map + SQL for data models
+            Cache layer : Map data/event data, cannot have live data, can be frequently updated, Replicated Data : History data, HashMap metadata lookup table
+            Logging layer : Hadoop Cluster, consists of live data : driver's position for trip route and is archived for analysis purposes.
+
+    Algorithm :
+       Provisioning (static code to running services) - Terroform with Operating-system-level virtualization also known as containerization using Docker & manages and collaborates theses services and it's life-cycles using Mesos on top of Cassandra.
+       Business Logic : Core Features :
+           a)Customer-Driver Matching & Mapping : Searching for Nearest Relevant  Uber/Lyft drivers & Connect to the chosen Uber/Lyft driver
+           b)Route Matching : Shortest Path : Start(Driver current location) to destination(Customer pickup)
+                              Shortest Path : Start(Customer pickup) to destination(Customer drop-off)
+             ETA's : Splitting graph algorithm : Pre-compute Using Dijkstra's algorithm excluding live traffic info & calculating routing and durations using A* and/or Travelling Salesman
+                     Historical data : Static edge weights (Faster but not completely accurate)
+
+            [Note : Graph(City Map) : Nodes are street intersections and Weighted Edges are street(street name,speed limits,traffic info)]
+
+
+    Diagram :
+
+
+                  Find Drivers Nearby
+        Customer ------------------->   Servers  ---------> Aggregator Server
+            ^    ------------------->                        ^
+              \    Request Ride                              |
+
+                    \                                        |
+                         \                               Quad    Tree -------------> Quad tree Server
+                                                             ^
+                            \                                |
+                              Notification  Server           |
+                                              ^              |
+                                              |              |
+               Update location                |              |
+        Driver ------------------------>    Driver Location Server ------------> SSD/External Disk Storage
+
+
+    Performance : Refer System Design Concepts
+                Caching layer and replication : How to make read access even faster? Use Cache system instead of db for Timeline/Feed, live data.
+                Load Balancer
+                Data redundancy and replication for single point of failure/ Fault Tolerance
+                Data partition/sharding based on
+                Data pruning/ clean up
+                Data security
+                Testing : On special events, New Years Eve balance increasing demands
+
+    Online Video Link : https://www.youtube.com/watch?v=J3DY3Te3A_A&index=6&list=PLA8lYuzFlBqAy6dkZHj5VxUAaqr4vwrka

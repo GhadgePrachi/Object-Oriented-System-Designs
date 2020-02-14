@@ -1,6 +1,16 @@
-Only keep track of weeks data and then distribute the data to users
-1)NO SQL :
-           i)File System : Easily maintained as data is not to be updated once set but read are slower
-           ii)XML : Very easy to share and distribute data
+    Goal : Store stock data
 
-2)SQL     : Structured with Roll back, Back up, Security options but difficult to read : Expensive
+    System Requirements :
+        Scalable
+        Available and reliable
+        Quick read-writes
+
+    DB :
+        Only keep track of weeks data and then distribute the data to users
+        1)NO SQL :
+                   i)File System : Easily maintained as data is not to be updated once set but read are slower
+                   ii)XML : Very easy to share and distribute data
+
+        2)SQL     : Structured with Roll back, Back up, Security options but difficult to read : Expensive
+
+    Performance :

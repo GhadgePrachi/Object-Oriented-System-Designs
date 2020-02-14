@@ -1,3 +1,72 @@
-Similar to ContentSharing except for media file size which is too huge, hence content streaming and no graph map exists for the network
+    Goal : Upload, View and Search photos/videos
 
-Online Link : http://highscalability.com/blog/2015/11/9/a-360-degree-view-of-the-entire-netflix-stack.html
+    System Requirements :
+            Functional :
+                Allow users to upload/delete/download videos
+                Search other videos by titles
+                Add stats i.e likes/dislikes, total views to the videos
+                Add comments to videos
+
+            Non-Functional :
+                Scalable and flexible
+                Available
+                Consistency is okay to take a hit, it's okay for user not to see the photo/video for a while
+                Reliable, user's data/photos/video should not be lost
+                Min Latency not more than 200 ms(3 min) for news feed generation
+                Read heavy
+                Calculate estimates,
+                    500 Million users of which 1 Million users are active everyday
+                        Each views 5 videos per day => 1 Million * 5 / 24*60*60  read/view request per second
+                        Read to write ratio is 200:1 => 1 Million * 5 / 24*60*60*200 write/upload request per second
+                        Each uploads 5 videos per day 20 MB each => 1 Million * 5 * 20 MB / 24 * 60 *60 storage per second
+
+            Extended :
+                Video recommendations, watch later, favorites
+
+    API's :
+        uploadVideo(api_dev_key, video_title, vide_description, tags[], category_id, default_language,
+                                recording_details, video_contents)
+        searchVideo(api_dev_key, search_query, user_location, maximum_videos_to_return, page_token)
+        streamVideo(api_dev_key, video_id, offset, codec, resolution)
+
+
+    DB :
+        How many users? 500 Millions
+        DB Schema :
+            User Table (user_id, user_name, location, dob, about_me)
+            Video Metadata Table(media_id, user_id, timestamp, location)
+        How to store?
+            DB or File?
+               Filesystem allows slower read so let's go with db
+            SQL  or No-SQL?
+                SQL : Above tables
+                No-SQL : Media details  (alternative : Big table for metadata thumbnails storage)
+
+    Diagram :
+
+                                                            Video /Thumbnail storage
+                                                             ^                     ^
+            upload                                         /                        \
+           <--------->
+            search                                      /                             \
+    Client <--------->   Web Server <--------> App Server ------> PriorityQueue---->Encoder
+             view                                ^         ^                             /
+           <--------->                           |          \
+                                                 |                                    /
+                                                 |             \
+                                                 |                                  /
+                                                 |                ↓                 ↓
+                                                 |                 Metadata storage
+                                                 |
+                                                 ↓
+                                             User DB
+
+    Performance : Refer System Design Concepts
+            Caching layer and replication : How to make read access even faster? Push data closer to the user and cache hot data rows
+            Load Balancer
+            Data redundancy and replication for single point of failure
+            Data partition/sharding based on user_id, video_id
+            Data pruning/ clean up
+            Data security
+
+

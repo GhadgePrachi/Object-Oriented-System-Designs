@@ -1,0 +1,74 @@
+    Goal : As a Proximity server, allows users to search nearby places, event etc
+
+    System Requirements :
+        Functional
+            Allow user to add/delete/update locations
+            Allow user to search nearby places/events given user's location
+            Allow user to give feed backs  to the locations
+        Non-Functional
+            Scalable
+            Available/Reliable (Fault tolerance)
+            Consistent across multiple devices with min of 200 ms latency
+            Search heavy
+            Calculate estimates
+                Traffic estimates
+                    200 Million Users of which 100 are active every day and search 10 locations/events
+                        200 Million * 100 /24*60*60 Query Per Second
+                Storage estimates :
+                    500 Million places,
+                        location_id : 8 Bytes
+                        location_name : 256 Bytes
+                        lat : 8 Bytes
+                        lon : 8 Bytes
+                        category : 32 Bytes
+                        description : 512 Bytes
+                        8 + 256 + 8 + 8 + 32 + 512 = 824 * 500 Million = 412 Billion Bytes
+
+                        location_id : 8 Bytes
+                        reviews : 8 Bytes
+                        review_text : 512 Bytes
+                        ratings : 8 Bytes
+                        8 + 8 + 512 + 8 = 536*500 Million = 268 Billion Bytes
+                    200 Million Users
+
+    API's :
+        search(api_dev_key, user_location, search_term, max_results, sort, category_filter, radius_filter)
+        returns JSON list of places/events
+
+    DB:
+     How many places? 500 Million all across the globe
+     How many user? 200 Million of which 100 Million are active users
+     DB Schema?
+        Place Table (location_id, location_name, lat, long, category, description)
+        Review Table (location_id, reviews, review_text, ratings)
+        User Table (user_id, user_name, dob, address)
+     Where to store it?
+        File or DB ? File easier to maintain but slow read, go with DB
+        SQL or No-SQl?
+            SQL : Schema tables
+            No-SQL : Images/Videos on external storage with metadata storage, use cassandra works well with cross platform
+
+     Algorithm :
+      How to efficiently store the location for effective search
+        1)SQL solution :
+            Select * from location where lon between X-D and X+D lat between Y-D and Y+D
+        2)Static grid : Of size Radius/Diameter :
+            Store locations in a graph like structure
+            Add Grid_id to every location and maintain index on Grid_id to improve performance
+            Select * from location where lon between X-D and X+D and lat between Y-D and Y+D
+            and Grid in Grid1, ....Grid 8
+        3)Dynamic grid : Of Quad Tree : All leaf are places connected by double pointers and have parent pointers
+            Whole globe is one node and split into further nodes if it had more than 500 locations
+      Ranking
+        What if we want to return results based on popularity,relevance rather than proximity
+
+     Diagram :
+
+     Performance : Refer System Design Concepts
+                 Caching layer and replication : How to make read access even faster? Use Cache system instead of db for Timeline/Feed, live data.
+                 Load Balancer
+                 Data redundancy and replication for single point of failure/ Fault Tolerance
+                 Data partition/sharding based on location_id, area
+                 Data pruning/ clean up
+                 Data security
+
