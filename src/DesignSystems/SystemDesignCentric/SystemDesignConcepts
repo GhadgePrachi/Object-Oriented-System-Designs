@@ -1,15 +1,29 @@
-Basic workflow :
+BASIC WORKFLOW -
     i)Four major sub-tasks:
-        A)UI design -
+        A)Requirement Gathering - 5 mins
             Clearing i/p and o/p functional requirements (system features)
             Clearing i/p and o/p non-functional requirements(Metrics eg scalability,flexibility,reliability i.e no imp data should be lost in terms of failure etc,availability with minimal latency/response time)
                 Traffic estimates : In details, eg if 200 read request every sec would mean 200*3600*12 in a day =>17280000(17 Million) * 30*12 in a year =>6,120,000,000 (6 Billion)
                 Storage estimates : While discussing DB
             How user interacts with the system via User Interface(Web based or Mobile App based),
             How user adds data to system and how result is presented back to the user by the system
-         [This is basically object oriented problem but in brief, discuss how you think the system should work wrt user]
+            [This is basically object oriented problem but in brief, discuss how you think the system should work wrt user]
 
-        B)Server Design -
+        B)Processing design/diagram - 5 mins
+            How data flows through the system? [from data storage to system & system to ui](Refer Network)
+            How and where data is validated by the system? (Refer Data)
+            How data is transformed/processed as it moves into system and out of the system (Refer Data)
+            Client-Server Model                    - - - - - - -
+              - - - -          - - - - - - - - - - |CACHE LAYER  |        - - - - - - - -
+             |      | Request | Load Balancer |    |Server01     |  ----> | Data Storage|
+             | UI   |  ---->  |               | API|Server02     |
+             |_ _ _ |  <----  |_ _ _ _ _ _ _ _|_ _ |... _ _ _ _ _|  <---- |_ _ _ _ _ _ _|
+                       Reply
+             Client Device               Service System                  Database System and/or 
+                                                                         File System
+
+
+        C)Server Design - 2-30 mins with optimization
             API : Maps endpoint to particular service and read/write request loads
             Specific service and it's algorithm
             Server selections:
@@ -20,146 +34,206 @@ Basic workflow :
                   Memory per server? Large memory required in case of backend server else lag in response time with increasing requests.
                   HeavyCPU for servers? More calculations and fetching result(Dual Core)
 
-        C)Data design -
-                    DB Schema and relationship with one another
-                    Quantity :
-                       How much? dependent on Query per second(QPS)
-                    Types :
-                        a)Persistent Layers :
-                            SQL : Relational Structured DB : Entity types : eg User, Content
-                            NoSQL: More document or distributed DB : It supports supports key-value stores, document store, BigTable, and graph databases : eg Cassandra (column based), MongoDB, HBase, Redis
-                        b)Caching Layer :
-                            Hot/popular/most frequently used data, use ranking to determine the hot data, use LRU to keep its updated
-                            eg Redis layer for live data, Map(Fixed pt), Events(Cassandra) response sent to multiple customers
-                        c)Archived Layer : @Warehouse for analytics system
-                        d)Logging Layer : Kafka for injecting lots of msgs without being lost and archived it
-
-        D)Processing design/diagram -
-            How data flows through the system? [from data storage to system & system to ui]
-            How and where data is validated by the system?
-            How data is transformed/processed as it moves into system and out of the system
-            Client-Server Model                    - - - - - - -
-              - - - -          - - - - - - - - - - |CACHE LAYER  |        - - - - - - - -
-             |      | Request | Load Balancer |    |Server01     |  ----> | Data Storage|
-             | UI   |  ---->  |               | API|Server02     |
-             |_ _ _ |  <----  |_ _ _ _ _ _ _ _|_ _ |... _ _ _ _ _|  <---- |_ _ _ _ _ _ _|
-                       Reply
-             Client Device               Service System                  Database System
+        D)Data design - 2-30 mins with optimization
+            DB Schema and relationship with one another
+            Quantity :
+               How much? dependent on Query per second(QPS)
+            Types :
+                a)Persistent Layers :
+                    SQL : Relational Structured DB : Entity types : eg User, Content
+                    NoSQL: More document or distributed DB : It supports supports key-value stores, document store, BigTable, and graph databases : eg Cassandra (column based), MongoDB, HBase, Redis
+                b)Caching Layer :
+                    Hot/popular/most frequently used data, use ranking to determine the hot data, use LRU to keep its updated
+                    eg Redis layer for live data, Map(Fixed pt), Events(Cassandra) response sent to multiple customers
+                c)Archived Layer : @Warehouse for analytics system
+                d)Logging Layer : Kafka for injecting lots of msgs without being lost and archived it
 
     ii)How to make our system efficient?
+
+              Request-Response   LoadBalancer                API's                Services                  Caching                      DB
+
+               Request        _ _ _ _ _ _ _ _ _
+              ------------->|     REGION       |       ____________      ________________________     _______________           _______________
+              Http/s        |  ______   _____  | ---> | Web Servers|--> |Scalable Micro-Services |-->| In-memory     |------>  |Schema         |
+              Client-Server | |ZoneA | |ZoneB || <--- |____________|<-- |________________________|<--| Compute Data  |<-----   |Table          |
+              Model         | |______| |______||            ^             ^               ^          |_______________|         |Relationships  |
+     Front                  |                  |            |             |               |               ^    ^               |_______________|
+     End      Response      |_ _ _ _ _ _ _ _ _ |            |             |               |               |    |               |External Files |            TESTING
+              <-------------      ^      ^                  |             |               |               |    |               |_______________|
+              tcp web socket      |      |                  |             |               |               |    |                       ^
+                                  |      |                  |             |               |               |    |                       |
+              1.Pier-to-Pier
+              e.g Whatsapp Msg   DNS     Round-Robin/    RPC?            Consistent    Spring?     Master-Slave Redis-Cluter?      SQL or NoSQL or Files?
+              2. Broadcoast      Lookup  Regional        Rest?           Hashing       Node.js?    Model for    Hash/List array    Distributed?
+              e.g Fb updates             (Separated/     Kafka?                                    Read/Write                      (Data partition
+                                          Isolated                                                                                  Data replication)
+                                          Zones)
+
+
+     |----------------|5min|--------------|15min|-----------------------------------------------------------------|30-35min|-------------|40min|---------------|45min|
+
+
           Client:
-            Ease for user to access the system(UI)
+                Ease for user to access the system(UI) as client sends request to application
+
+          Network :
+                Request - Response (Bidirectional Communication)
+                    Time sensitive, response is expected in certain time bound
+                    With same request can use loop pooling, not a great solution though
+                    Client can go offline msgs are stored onto server sent when person is back online, expected in specific order
 
           Server:
-            Ease for the system(Web Services-not too complex and avoid unnecessary work/processing),
-            Horizontal Scaling vs Vertical Scaling :
-                Horizontal : Multiple Servers for backups in case of failure and faster responses
-                Vertical : Add capacity to server, hardware limitations to amt to which one can scale.
-            Load balancer?
-                Why? Distributes equal request loads onto each server
-                Where? Between Application Servers & Clients, Application Servers & DB Server, Application Servers & Cache Servers
-                How? DNS Lookup, Round-robin or geo-located
-                    Round-robin easier to implement but does not take into account if servers get overloaded or slow, so need to take that into account too and distribute the traffic nad take out a server from the list if it's down
-                    Geo-located Services Servers? Response time is improved
-            Micro services with consistent hashing :
-                Distributed Hash Tables and Caching system with ease to add/remove servers
-                In case Hash Tables are resized, only ‘k/n’ keys need to be remapped where ‘k’ is the total number of keys and ‘n’ is the total number of servers.
-            Proxy Servers :
-                Between Client and Backend Servers
-                Typically, proxies are used to filter requests, log requests, or sometimes transform requests (by adding/removing headers, encrypting/decrypting, or compressing a resource).
-                Another advantage of a proxy server is that its cache can serve a lot of requests. If multiple clients access a particular resource, the proxy server can cache it and serve it to all the clients without going to the remote server.
-                Types :
-                    Default/Closed Proxy
-                        This proxy server only allows users within a network group (i.e. a closed proxy) to store and forward Internet services such as DNS or web pages to reduce and control the bandwidth used by the group.
-                    Open Proxy
-                        Anonymous Proxy
-                            Thіs proxy reveаls іts іdentіty аs а server but does not dіsclose the іnіtіаl IP аddress
-                        Transparent Proxy
-                            Thіs proxy server аgаіn іdentіfіes іtself, аnd wіth the support of HTTP heаders, the fіrst IP аddress cаn be vіewed.
-                            The mаіn benefіt of usіng thіs sort of server іs іts аbіlіty to cаche the websіtes.
-                    Reverse Proxy
-                        A reverse proxy retrieves resources on behalf of a client from one or more servers.
-                        These resources are then returned to the client, appearing as if they originated from the proxy server itself
-
+                Ease for the system(Web Services-not too complex and avoid unnecessary work/processing),
+                Horizontal Scaling vs Vertical Scaling :
+                    Horizontal : Multiple Servers for backups in case of failure and faster responses.
+                    Vertical : Add capacity to server, hardware limitations to amt to which one can scale.
+                Load balancer?
+                    Why? Distributes equal request loads onto each server i.c splits the load evenly among servers
+                    Where? Between Application Servers & Clients, Application Servers & DB Server, Application Servers & Cache Servers
+                    How? DNS Lookup, Round-robin or geo-located/regional - zoneA,zoneB etc
+                        DNS Lookup
+                            DNS Lookup to map the request to nearest relevant data center/server/api
+                        Round-robin
+                            Easier to implement but does not take into account if servers get overloaded or slow, so need to take that into account too and distribute the traffic nad take out a server from the list if it's down
+                        Geo-located Services Servers?
+                            Response time is improved
+                            Good for performance - Backup & Availability , With multiple zones in a region if one zone is down due to electricity issues etc other zones still be functional.
+                Micro services with consistent hashing :
+                    As load balancer hits api, api will further map the endpoint to specific service
+                    Micro services with Parallel & Asynchronous processing
+                    Consistent Hashing for Micro Services:
+                        Distributed Hash Tables and Caching system with ease to add/remove servers
+                        In case Hash Tables are resized, only ‘k/n’ keys need to be remapped where ‘k’ is the total number of keys and ‘n’ is the total number of servers.
+                Proxy Servers :
+                    Between Client and Backend Servers
+                    Typically, proxies are used to filter requests, log requests, or sometimes transform requests (by adding/removing headers, encrypting/decrypting, or compressing a resource).
+                    Another advantage of a proxy server is that its cache can serve a lot of requests. If multiple clients access a particular resource, the proxy server can cache it and serve it to all the clients without going to the remote server.
+                    Types :
+                        Default/Closed Proxy
+                            This proxy server only allows users within a network group (i.e. a closed proxy) to store and forward Internet services such as DNS or web pages to reduce and control the bandwidth used by the group.
+                        Open Proxy
+                            Anonymous Proxy
+                                Thіs proxy reveаls іts іdentіty аs а server but does not dіsclose the іnіtіаl IP аddress
+                            Transparent Proxy
+                                Thіs proxy server аgаіn іdentіfіes іtself, аnd wіth the support of HTTP heаders, the fіrst IP аddress cаn be vіewed.
+                                The mаіn benefіt of usіng thіs sort of server іs іts аbіlіty to cаche the websіtes.
+                        Reverse Proxy
+                            A reverse proxy retrieves resources on behalf of a client from one or more servers.
+                            These resources are then returned to the client, appearing as if they originated from the proxy server itself
 
           Data :
-            Optimization and Testing for following metrics
-                  Scalability and Flexibility for future demands
-                  Consistency
-                  Failures:
-                    Backups(Redundancy and replication with Master-Slave Model)
-                    Recovery/Fault Tolerance : Master-Slave Model, if master dies, one of slaves becomes master
-                    Availability/Low latency of the data in case of failure
-                    Reliability
-                  Partitioning
-                    Types:
-                        Sharding/Horizontal Partitioning : eg fb user and list of friends stored together or area specific partitioning
-                        Vertical Partitioning : eg Instagram with user table & photo table & followers table stored separately
-                        Dictionary based Partitioning
-                    Methods:
-                        List based : Based on Area
-                        Round robin algorithm based : Based on Tweet/Instagram object or id i.e n rows
-                        Key/ Hash based : Based on word or hash tag
-                        Composite based : More than one method
-                    Problems to look for:
-                        Joins/normalization : De-normalization
-                        Ref integrity : In RDBMS not allowed, done at application code level, causes lot of dangling pointers clean up for SQL
-                        Scaling : Rebalancing for new data set
-                  Caching and replication and update by checking if it exists else query the db and update cache accordingly
-                  Read/Write Trade-offs : Master-Slave Model
-                  Secure the content with access permission levels/controls
-                  Data pruning/cleanups : Have expiration period like two years, what about links that are not visited often like 6 months, tricky can keep it since db storage for it is cheap nowadays
+                Optimization and Testing for following metrics
+                      Scalability and Flexibility for future demands
+                      Consistency
+                      Failures:
+                        Backups(Redundancy and replication with Master-Slave Model)
+                        Recovery/Fault Tolerance : Master-Slave Model, if master dies, one of slaves becomes master
+                        Availability/Low latency of the data in case of failure
+                        Reliability
+                      Partitioning
+                        Types:
+                            Sharding/Horizontal Partitioning : eg fb user and list of friends stored together or area specific partitioning
+                            Vertical Partitioning : eg Instagram with user table & photo table & followers table stored separately
+                            Dictionary based Partitioning
+                        Methods:
+                            List based : Based on Area
+                            Round robin algorithm based : Based on Tweet/Instagram object or id i.e n rows
+                            Key/ Hash based : Based on word or hash tag
+                            Composite based : More than one method
+                        Problems to look for:
+                            Joins/normalization : De-normalization
+                            Ref integrity : In RDBMS not allowed, done at application code level, causes lot of dangling pointers clean up for SQL
+                            Scaling : Rebalancing for new data set
+                      Caching and replication
+                        Update by checking if it exists else query the db and update cache accordingly
+                      Secure the content with access permission levels/controls
+                      Data pruning/cleanups : Have expiration period like two years, what about links that are not visited often like 6 months, tricky can keep it since db storage for it is cheap nowadays
+    iii) Testing - 5 mins
+            Correctness of system (services wrt expected i/p-o/p)
+            Dealing with Failure : Maintaining reliability, availability and consistency
+            Increasing loads / Scalable solutions do they work for millions users/traffic?
+            Security / Data privacy maintained
+            Cleanups / Storage efficiently managed?
+NOTES -
+    1)BASIC CONCEPTS :
+        Study what happens when we type url and enter? Domain Name Server mapping to ipaddress of nearest server
+        What is web crawling? url click chaining
+        What are web services?Processes request using business logic etc via Web, hence not requiring any platform setup unlike Mobile/Desktop application
+        Service communication Types?
+            i)Stateful : SMTP (Email services)
+            ii)Stateless : Http : Server does not store any info of client's session
+        What is SOA? Service Oriented Architecture : Contains and maintains several web services.
+          Types :
+             i)Soap : What is SOAP(Simple object Access Protocol) are std communication protocol/rules for XML based msg/data exchange.SOAP uses different transport protocol like HTTP,SMTP
+             ii)REST : What is REST? Representational State Transfer
+    2)System requirement gathering :
+        Functional & Non-functional
+    3)Who is the client?
+    4)Services : API DESIGN and ALGORITHMS
+      Third party services : Data partitioning/ Date replication/ Parallel Processing/ Batch processing/ Event driven services/ Caching
+        a)Kafka Clusters: Event-Driven => Scalable Producer-Consumer(Subscriber) model for Kafka cluster with partition queues
+            Link : https://kafka.apache.org/intro
+            Advantages of Queue :
+            i) Can make the changes/updates in a batch, else if we make it for every change occurred can be expensive
+            ii))Can have asynchronous task, would not freeze the current activity till changes/updates are made
+        b)Azure CDN/CloudFlare/CacheFly/Akamai: Content Delivery Network
+        c)Redis Cluster : Cache layer, In-memory db, refreshed with every update or in specific time interval, faster than Cassandra ans MongoDB
+            Link : https://redis.io/documentation
+          Memcached :
+        d)Terroform : Data centers provisioning
+        d)Docker : It is a computer program that performs operating-system-level virtualization also known as containerization , where each containers is independent of other container, so if service is down would not affect others.
+        e)Mesos : Manages and collaborates theses services and it's life-cycles
+    5)Data
+        Data Storage Models :
+            a)Files : Easier to maintain, but slower reads
+            b)XML/JSON : (Semi-Structured) : well represented (Data processing e.g Request/Response)
+            c)SQL : Relational DB (Structured)
+            d)NOSQL(Not-Just-SQL) :
+                i)Key-Value Store : Redis Cluster : For cache layer, in-memory db
+                ii)Wide column Store : Cassandra and HBase : Has Low latency, stores in master machine and it will internally takes care of replicating across slave machine, Columnar/tabular db
+                iii)Document-Store : (Unstructured/Raw data)
+                    MongoDB : Most Scalable, everything stored in documents and modified on the fly
+                    Map-Reduce Jobs : File System(Log Files) are used for Analysis, downside can be ran only say twice a day and reads are slower
+                iV)Graph DB : Neo4j
+                (Additional : Mahout : Recommendation Services depending on inputs, generates a score/tags say per user (Uses Machine learning to do data mining)
 
-Online References:
-https://www.educative.io/courses/grokking-the-system-design-interview/
-http://blog.gainlo.co/index.php/2017/03/24/chapter-5-system-design-interviews-part-complete-guide-google-interview-preparation/
-https://www.youtube.com/watch?v=0163cssUxLA
-https://www.youtube.com/watch?v=DggPVpQmrsg
-https://www.youtube.com/watch?v=GcE-a7zO2N0
+        Data pruning/ clean up : Timer based
 
-Notes:
-1)BASIC CONCEPTS :
-    Study what happens when we type url and enter? Domain Name Server mapping to ipaddress of nearest server
-    What is web crawling? url click chaining
-    What are web services?Processes request using business logic etc via Web, hence not requiring any platform setup unlike Mobile/Desktop application
-    Service communication Types?
-        i)Stateful : SMTP (Email services)
-        ii)Stateless : Http : Server does not store any info of client's session
-    What is SOA? Service Oriented Architecture : Contains and maintains several web services.
-      Types :
-         i)Soap : What is SOAP(Simple object Access Protocol) are std communication protocol/rules for XML based msg/data exchange.SOAP uses different transport protocol like HTTP,SMTP
-         ii)REST : What is REST? Representational State Transfer
-2)System requirement gathering :
-    Functional & Non-functional
-3)Who is the client?
-4)Services : API DESIGN and ALGORITHMS
-  Third party services : Data partitioning/ Date replication/ Parallel Processing/ Batch processing/ Event driven services/ Caching
-    a)Kafka Clusters: Event-Driven => Scalable Producer-Consumer(Subscriber) model for Kafka cluster with partition queues
-        Link : https://kafka.apache.org/intro
-        Advantages of Queue :
-        i) Can make the changes/updates in a batch, else if we make it for every change occurred can be expensive
-        ii))Can have asynchronous task, would not freeze the current activity till changes/updates are made
-    b)Azure CDN/CloudFlare/CacheFly/Akamai: Content Delivery Network
-    c)Redis Cluster : Cache layer, In-memory db, refreshed with every update or in specific time interval, faster than Cassandra ans MongoDB
-        Link : https://redis.io/documentation
-      Memcached :
-    d)Terroform : Data centers provisioning
-    d)Docker : It is a computer program that performs operating-system-level virtualization also known as containerization , where each containers is independent of other container, so if service is down would not affect others.
-    e)Mesos : Manages and collaborates theses services and it's life-cycles
-5)Data
-    Data Storage Models :
-        a)Files : Easier to maintain, but slower reads
-        b)XML/JSON : (Semi-Structured) : well represented (Data processing e.g Request/Response)
-        c)SQL : Relational DB (Structured)
-        d)NOSQL(Not-Just-SQL) :
-            i)Key-Value Store : Redis Cluster : For cache layer, in-memory db
-            ii)Wide column Store : Cassandra and HBase : Has Low latency, stores in master machine and it will internally takes care of replicating across slave machine, Columnar/tabular db
-            iii)Document-Store : (Unstructured/Raw data)
-                MongoDB : Most Scalable, everything stored in documents and modified on the fly
-                Map-Reduce Jobs : File System(Log Files) are used for Analysis, downside can be ran only say twice a day and reads are slower
-            iV)Graph DB : Neo4j
-            (Additional : Mahout : Recommendation Services depending on inputs, generates a score/tags say per user (Uses Machine learning to do data mining)
+        Data security : private/public permission access to the users
 
-    Data pruning/ clean up : Timer based
 
-    Data security : private/public permission access to the users
+ONLINE REFERENCES -
+    BRIEF INTRODUCTION
+        Source 01 : (Video)
+        https://www.youtube.com/watch?v=kE8Qro40_V4
+
+        Source 02 : (Video)
+        https://www.youtube.com/watch?v=-W9F__D3oY4
+
+        (Additional)
+        Source 03 : (Video)
+        https://www.youtube.com/watch?v=Gg318hR5JY0
+
+        Source 04 : (Video)
+        https://www.youtube.com/watch?v=CtmBGH8MkX4
+
+        Source 05 :(Video)
+        https://www.youtube.com/watch?v=REB_eGHK_P4
+
+        Source 06 : (Articles)
+        http://blog.gainlo.co/index.php/2017/03/24/chapter-5-system-design-interviews-part-complete-guide-google-interview-preparation/
+
+        Source 07 :(Video)
+        https://www.youtube.com/watch?v=0163cssUxLA
+        https://www.youtube.com/watch?v=DggPVpQmrsg
+        https://www.youtube.com/watch?v=GcE-a7zO2N0
+
+    PRACTICE SYSTEMS
+        Source 01 :(Course)
+        https://www.educative.io/courses/grokking-the-system-design-interview/
+
+        Source 02 :(Video)
+        https://www.youtube.com/channel/UC-vYrOAmtrx9sBzJAf3x_xw
+        https://www.youtube.com/channel/UCRPMAqdtSgd0Ipeef7iFsKw
+        https://www.youtube.com/channel/UCn1XnDWhsLS5URXTi5wtFTA
+
