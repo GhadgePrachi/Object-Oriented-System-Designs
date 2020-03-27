@@ -170,19 +170,19 @@ NOTES -
         Functional & Non-functional
     3)Who is the client?
     4)Services : API DESIGN and ALGORITHMS
-      Third party services : Data partitioning/ Date replication/ Parallel Processing/ Batch processing/ Event driven services/ Caching
-        a)Kafka Clusters: Event-Driven => Scalable Producer-Consumer(Subscriber) model for Kafka cluster with partition queues
+      Third party services : Parallel Processing / Batch processing / Event driven services / Data partitioning / Date replication / Caching
+        a)Helm / Terroform: S/w tools for data centers provisioning for efficient upgrades and rollbacks.
+        b)Docker Containers / VMs : It is a computer program that performs operating-system-level virtualization also known as containerization , where each containers is independent of other container, so if service is down would not affect others.
+        c)Kubernetes / Docker Swarm / Apache Mesos : A container orchestration system that treats multi-container application as a single deployment entity. Manages and collaborates these applications/services and it's life-cycles. 
+        d)Red Hat's OpenShift Container Platform / Amazon ECS / Google KE  
+        e)Kafka Clusters: Event-Driven => Scalable Producer-Consumer(Subscriber) model for Kafka cluster with partition queues
             Link : https://kafka.apache.org/intro
             Advantages of Queue :
             i) Can make the changes/updates in a batch, else if we make it for every change occurred can be expensive
             ii))Can have asynchronous task, would not freeze the current activity till changes/updates are made
-        b)Azure CDN/CloudFlare/CacheFly/Akamai: Content Delivery Network
-        c)Redis Cluster : Cache layer, In-memory db, refreshed with every update or in specific time interval, faster than Cassandra ans MongoDB
-            Link : https://redis.io/documentation
-          Memcached :
-        d)Terroform : Data centers provisioning
-        d)Docker : It is a computer program that performs operating-system-level virtualization also known as containerization , where each containers is independent of other container, so if service is down would not affect others.
-        e)Mesos : Manages and collaborates theses services and it's life-cycles
+        f)Azure CDN/CloudFlare/CacheFly/Akamai: Content Delivery Network
+        g)Redis Cluster/ Memcached : Cache layer, In-memory db, refreshed with every update or in specific time interval, faster than Cassandra ans MongoDB
+            Links : https://redis.io/documentation
     5)Data
         Data Storage Models :
             a)Files : Easier to maintain, but slower reads
@@ -236,4 +236,8 @@ ONLINE REFERENCES -
         https://www.youtube.com/channel/UC-vYrOAmtrx9sBzJAf3x_xw
         https://www.youtube.com/channel/UCRPMAqdtSgd0Ipeef7iFsKw
         https://www.youtube.com/channel/UCn1XnDWhsLS5URXTi5wtFTA
+        
+        Source 03 : (Blog)
+        hhttp://highscalability.com/blog/category/example
+        
 
