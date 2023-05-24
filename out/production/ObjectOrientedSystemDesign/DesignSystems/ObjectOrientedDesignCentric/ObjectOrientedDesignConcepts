@@ -1,7 +1,7 @@
 Basic workflow :
     1)How many classes/concepts we need?
     2)Define each class
-        i)Types: What does the class represent?
+        i)What does the class represent?
             a)i)Collection of generic objects [Example - tree/trie/linked list]
               ii)Collection of primitive objects [Example - int[] array, ArrayList<Integer>]
             b)Single Generic object [Example - tree node/ trie node /linked list node]
