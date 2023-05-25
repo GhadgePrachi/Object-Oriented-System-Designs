@@ -1,13 +1,14 @@
 BASIC WORKFLOW -
     i)Four major sub-tasks:
         A)Requirement Gathering - 5 mins
-            Clearing i/p and o/p functional requirements (system features)
-            Clearing i/p and o/p non-functional requirements(Metrics eg scalability,flexibility,reliability i.e no imp data should be lost in terms of failure etc,availability with minimal latency/response time)
+            Clarifying Goal of the system
+            Clarifying i/p and o/p functional requirements (system features)
+                How user interacts with the system via User Interface(Web based or Mobile App based),
+                How user adds data to system and how result is presented back to the user by the system
+                [This is basically object oriented problem but in brief, discuss how you think the system should work wrt user]
+            Clarifying i/p and o/p non-functional requirements(Metrics eg scalability,flexibility,reliability i.e no imp data should be lost in terms of failure etc,availability with minimal latency/response time)
                 Traffic estimates : In details, eg if 200 read request every sec would mean 200*3600*12 in a day =>17280000(17 Million) * 30*12 in a year =>6,120,000,000 (6 Billion)
                 Storage estimates : While discussing DB
-            How user interacts with the system via User Interface(Web based or Mobile App based),
-            How user adds data to system and how result is presented back to the user by the system
-            [This is basically object oriented problem but in brief, discuss how you think the system should work wrt user]
 
         B)Processing design/diagram - 5 mins
             How data flows through the system? [from data storage to system & system to ui](Refer Network)
