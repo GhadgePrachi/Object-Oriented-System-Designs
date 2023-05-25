@@ -171,7 +171,7 @@ NOTES -
     3)Who is the client?
     4)Services : API DESIGN and ALGORITHMS
       Third party services : Parallel Processing / Batch processing / Event driven services / Data partitioning / Date replication / Caching
-        a)Helm / Terroform: S/w tools for data centers provisioning for efficient upgrades and rollbacks.
+        a)Helm / Terraform: S/w tools for data centers provisioning for efficient upgrades and rollbacks.
         b)Docker Containers / VMs : It is a computer program that performs operating-system-level virtualization also known as containerization , where each containers is independent of other container, so if service is down would not affect others.
         c)Kubernetes / Docker Swarm / Apache Mesos : A container orchestration system that treats multi-container application as a single deployment entity. Manages and collaborates these applications/services and it's life-cycles. 
         d)Red Hat's OpenShift Container Platform / Amazon ECS / Google KE  
