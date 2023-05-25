@@ -201,7 +201,6 @@ NOTES -
 
         Data security : private/public permission access to the users
 
-
 ONLINE REFERENCES -
     BRIEF INTRODUCTION
         Source 01 : (Video)
@@ -240,4 +239,15 @@ ONLINE REFERENCES -
         Source 03 : (Blog)
         hhttp://highscalability.com/blog/category/example
         
+History - 
+1.1 What and Why are we talking about? Centric towards an Idea / Goal
+1.2 How to do it correctly? Centric towards Functional Requirements
+1.3 How to do it effectively & efficiently? Centric towards Non-Functional Requirements
+1.3.a PHASE 1 : 1:1 Entity Transactions - Self served, no infrastructure needed per se
+1.3.b PHASE 2 : 1:N Entities Transactions - Middleman with physical infrastructure
+1.3.c PHASE 3 : 1:N Entities Transactions - Middleman with technical infrastructure 
+Read[Algorithms like Greed-index-computations e.g binary search etc, Pre-computations e.g dynamic programing etc], 
+Write[Data structures like hash map, hash set, stack, queue, heap, graphs etc], 
+Scale[Infrastructure like non-monolithic architecture : Client(s) [Caching], Server(s) [Restful Web Services vs Micro Services, Synchronous vs Asynchronous], Data(base(s)) [Reader/Writer, SQL vs NOSQL], Network [Security]
+Miscellaneous [SDLC (Agile methodology) : Resources/Requirement gathering, Development milestones-setting priorities and timelines and updating them based on progress, Testing environments, Logs monitoring, Dashboards monitoring]
 
